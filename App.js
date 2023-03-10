@@ -7,8 +7,9 @@ import Notes from './komponente/Notes';
 import AddNote from './komponente/AddNote';
 import EditNote from './komponente/EditNote';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 const Stack = createNativeStackNavigator();
+import axios from 'axios';
+
 
 export default function App() {
   const [note, setNote] = useState();
@@ -16,13 +17,27 @@ export default function App() {
 
   function handleNote() {
     let newNote = note;
-    let newNotes = [newNote, ...notes];
+    /*let newNotes = [newNote, ...notes];
     setNotes(newNotes);
-    setNote('');
+    setNote('');*/
+    let data = {content: newNote};
+    console.log(data);
+    axios.post("http://10.20.10.82:3000/create", data)
+    .then(res => {
+      console.log("uspjesno");
+      console.log(res.data);
+      loadNotes();
+    })
+    .catch(err => {
+      console.log("greska :( " + err);
+    });
 
-    AsyncStorage.setItem('storedNotes', JSON.stringify(newNotes)).then(() => {
-      setNotes(newNotes)
-    }).catch(error => console.log(error));
+    /*AsyncStorage.setItem('storedNotes', JSON.stringify(newNotes)).then(() => {
+      setNotes(newNotes);
+      console.log(newNotes);
+      console.log(JSON.stringify(newNotes));
+    }).catch(error => console.log(error));*/
+
   }
 
   useEffect(() => {
@@ -30,11 +45,25 @@ export default function App() {
   }, []);
 
   const loadNotes = () => {
-    AsyncStorage.getItem('storedNotes').then(data => {
+    axios.get("http://10.20.10.82:3000/uzmi")
+    .then(res => {
+      console.log("uspjesan get");
+      /*let temp = res.data.map(e => {
+        return e.content;
+      });
+      console.log(temp);
+      setNotes(temp);*/
+      setNotes(res.data);
+    })
+    .catch(err => {
+      console.log("greskica " + err);
+    });
+    /*AsyncStorage.getItem('storedNotes').then(data => {
       if(data !== null) {
         setNotes(JSON.parse(data));
       }
-    }).catch((error) => console.log(error));
+    }).catch((error) => console.log(error));*/
+
   }
 
   return (
@@ -42,7 +71,7 @@ export default function App() {
       <Stack.Navigator>
 
         <Stack.Screen name='Biljeske'>
-          {props => <Notes  {...props} notes={notes} setNotes={setNotes} note={note} setNote={setNote}/>}
+          {props => <Notes  {...props} notes={notes} setNotes={setNotes} note={note} setNote={setNote} loadNotes={loadNotes}/>}
         </Stack.Screen>
 
         <Stack.Screen name="Dodaj">
@@ -50,7 +79,7 @@ export default function App() {
         </Stack.Screen>
 
         <Stack.Screen name="Izmjeni">
-          {props => <EditNote {...props} notes={notes} setNotes={setNotes}/>}
+          {props => <EditNote {...props} notes={notes} setNotes={setNotes} loadNotes={loadNotes}/>}
         </Stack.Screen>
 
       </Stack.Navigator>

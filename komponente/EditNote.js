@@ -4,21 +4,44 @@ import { ScrollView, Text, KeyboardAvoidingView, Keyboard, TextInput, TouchableO
 import {styles} from './AddNote';
 import {useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import axios from 'axios';
 const EditNote = ({route, navigation, ...props}) => {
     const {i, n} = route.params;
-    const [newEdit, setNewEdit]= useState(n);
+    const [newEdit, setNewEdit]= useState(n.content);
+
+    function updateNote() {
+        axios.post("http://10.20.10.82:3000/create", {content: newEdit})
+        .then(res => {
+            console.log("uspjesno");
+            console.log(newEdit);
+            props.loadNotes();
+            navigation.navigate('Biljeske');
+        })
+        .catch(err => {
+            console.log("greska :( " + err);
+        });
+    }
 
     function editNote() {
-        let edited = [...props.notes];
+
+
+        /*let edited = [...props.notes];
         edited[i] = newEdit;
-        props.setNotes(edited);
+        props.setNotes(edited);*/
 
-        navigation.navigate('Biljeske');
+        axios.delete(`http://10.20.10.82:3000/delete/${n._id}`)
+        .then(res => {
+            console.log("uspio pola edita");
+            updateNote();
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
-        AsyncStorage.setItem('storedNotes', JSON.stringify(edited)).then(() => {
-            setNotes(edited)
-        }).catch(error => console.log(error))
+        /*AsyncStorage.setItem('storedNotes', JSON.stringify(edited)).then(() => {
+            props.setNotes(edited);
+            console.log(edited);
+        }).catch(error => console.log(error))*/
     }
 
     return (

@@ -5,18 +5,29 @@ import * as eva from '@eva-design/eva';
 import { EvaIconsPack } from '@ui-kitten/eva-icons';
 import { useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
 const Notes = ({navigation, ...props}) => {
 
     const [searchNote, setSearchNote] = useState();
 
-    function deleteNote(index) {
-        let newArray = [...props.notes];
-        newArray.splice(index, 1);
-        props.setNotes(newArray);
+    function deleteNote(index,id) {
+        
+        axios.delete(`http://10.20.10.82:3000/delete/${id}`)
+        .then(res => {
+            console.log("uspio delete ");
+            props.loadNotes();
+        })
+        .catch(err => {
+            console.log(err);
+        });
 
-        AsyncStorage.setItem('storedNotes', JSON.stringify(newArray)).then(() => {
+        /*let newArray = [...props.notes];
+        newArray.splice(index, 1);
+        props.setNotes(newArray);*/
+
+        /*AsyncStorage.setItem('storedNotes', JSON.stringify(newArray)).then(() => {
             props.setNotes(newArray)
-          }).catch(error => console.log(error))
+          }).catch(error => console.log(error))*/
     }
 
     function search(){
@@ -65,12 +76,12 @@ const Notes = ({navigation, ...props}) => {
                     <View style={css.emptybody}>
                         <Text>Jos nema biljeski, klikni plus za dodavanje</Text>
                     </View> : 
-                    props.notes.map((item, index) => 
+                    props.notes.reverse().map((item, index) => 
                         <View style={css.note} key={index}>
                             <View style={css.notenaslov}>
-                                <Text style={css.notenaslov_text}>{item}</Text>
+                                <Text style={css.notenaslov_text}>{/*item*/item.content}</Text>
                             </View>
-                            <TouchableOpacity onPress={()=> deleteNote(index)}>
+                            <TouchableOpacity onPress={()=> deleteNote(index,item._id)}>
                                 <Text style={css.minibutton}>Obrisi</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => navigation.navigate('Izmjeni', {
