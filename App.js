@@ -22,7 +22,7 @@ export default function App() {
     setNote('');*/
     let data = {content: newNote};
     console.log(data);
-    axios.post("http://10.20.10.82:3000/create", data)
+    axios.post("http://192.168.70.82:3000/create", data)
     .then(res => {
       console.log("uspjesno");
       console.log(res.data);
@@ -44,8 +44,12 @@ export default function App() {
     loadNotes();
   }, []);
 
+  const searchNotes = (bilokako) => {
+    setNotes(bilokako);
+  }
+
   const loadNotes = () => {
-    axios.get("http://10.20.10.82:3000/uzmi")
+    axios.get("http://192.168.70.82:3000/uzmi")
     .then(res => {
       console.log("uspjesan get");
       /*let temp = res.data.map(e => {
@@ -71,7 +75,7 @@ export default function App() {
       <Stack.Navigator>
 
         <Stack.Screen name='Biljeske'>
-          {props => <Notes  {...props} notes={notes} setNotes={setNotes} note={note} setNote={setNote} loadNotes={loadNotes}/>}
+          {props => <Notes  {...props} notes={notes} setNotes={setNotes} note={note} setNote={setNote} loadNotes={loadNotes} searchNotes={searchNotes}/>}
         </Stack.Screen>
 
         <Stack.Screen name="Dodaj">

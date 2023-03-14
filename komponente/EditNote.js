@@ -10,7 +10,7 @@ const EditNote = ({route, navigation, ...props}) => {
     const [newEdit, setNewEdit]= useState(n.content);
 
     function updateNote() {
-        axios.post("http://10.20.10.82:3000/create", {content: newEdit})
+        axios.post("http://192.168.70.82:3000/create", {content: newEdit})
         .then(res => {
             console.log("uspjesno");
             console.log(newEdit);
@@ -29,7 +29,7 @@ const EditNote = ({route, navigation, ...props}) => {
         edited[i] = newEdit;
         props.setNotes(edited);*/
 
-        axios.delete(`http://10.20.10.82:3000/delete/${n._id}`)
+        axios.delete(`http://192.168.70.82:3000/delete/${n._id}`)
         .then(res => {
             console.log("uspio pola edita");
             updateNote();

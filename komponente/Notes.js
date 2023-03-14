@@ -12,7 +12,7 @@ const Notes = ({navigation, ...props}) => {
 
     function deleteNote(index,id) {
         
-        axios.delete(`http://10.20.10.82:3000/delete/${id}`)
+        axios.delete(`http://192.168.70.82:3000/delete/${id}`)
         .then(res => {
             console.log("uspio delete ");
             props.loadNotes();
@@ -31,21 +31,18 @@ const Notes = ({navigation, ...props}) => {
     }
 
     function search(){
-        if(searchNote === ''){
-            Alert.alert('Ne moze biti prazno');
-        } else if (searchNote !== '') {
-            props.notes.forEach((item,index) => {
-                if(item.includes(searchNote)) {
-                    let searchItem = [...props.notes];
-                    let firstElOfArray = searchItem[0];
-                    let index = [...props.notes].indexOf(item);
-                    searchItem[0] = item;
-                    searchItem[index] = firstElOfArray;
-                    props.setNotes(searchItem);
-                }
-            })
+        let searchData = searchNote;
+        if (searchData == ""){
+            props.loadNotes();
         }
-        setSearchNote('');
+        axios.get("http://192.168.70.82:3000/search/" + searchData)
+        .then(res => {
+            props.searchNotes(res.data);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+
         Keyboard.dismiss();
     }
 

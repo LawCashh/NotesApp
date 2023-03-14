@@ -69,6 +69,17 @@ backend.delete("/delete/:id", async (req, res) => {
     }
 });
 
+
+backend.get("/search/:s", async (req, res) => {
+  try {
+      let data = await Note.find({content: { $regex: '.*' + req.params.s + '.*' } });
+      console.log(data);
+      res.status(200).json(data);
+    } catch (error) {
+      console.log(error);
+    }
+});
+
 /*const MongoClient = require('mongodb').MongoClient;
 const uri = "mongodb+srv://cajo:cajo123@notesappcluster.nk75wyo.mongodb.net/?retryWrites=true&w=majority";
 const client = new MongoClient(uri, { useNewUrlParser: true });
