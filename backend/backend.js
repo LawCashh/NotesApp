@@ -1,6 +1,6 @@
 import Note from './schema.js';
 
-const uri = "mongodb+srv://cajo:cajo123@notesappcluster.nk75wyo.mongodb.net/?retryWrites=true&w=majority";
+const uri = '...';
 const baza = 'NotesBaza';
 import express from "express";
 import mongoose from "mongoose";
